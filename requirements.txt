@@ -1,4 +1,6 @@
-streamlit>=1.39
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart
 groq>=0.13
 pandas
 python-dotenv

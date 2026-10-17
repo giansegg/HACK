@@ -1,4 +1,4 @@
-# Caja de Doña Rosa: MVP (Streamlit + Groq)
+# Mi Caja: MVP (FastAPI + HTML/CSS/JS + Groq)
 
 Agente web que convierte notas de voz y mensajes de una bodeguera en ventas, gastos y fiados, calcula su flujo de caja y estima una cuota mensual sostenible. Reto Mibanco "De la libreta a la caja".
 
@@ -26,17 +26,18 @@ Edita `.env` y pega tu clave en `GROQ_API_KEY` (se crea en https://console.groq.
 
 | Qué | Comando |
 |---|---|
-| App web | `streamlit run app.py` |
+| App web | `python -m uvicorn server:app --port 8000` y abre http://localhost:8000 |
 | Medir exactitud con el kit (necesita clave) | `python eval.py` (`--desde E16` evalúa solo desde ese mensaje) |
 | Procesar el set oculto sin la web | `python batch.py set_oculto.csv resultados_miequipo.csv` |
 | Pruebas offline (sin clave) | `python tests/test_core.py` |
 
-La app tiene tres pestañas:
-1. **Hablar con el agente:** nota de voz o texto. Si falta un monto, pregunta; se le contesta y lo completa. También responde "¿cuánto puedo pagar de cuota al mes?" y "¿cuánto me queda?".
-2. **Libro de caja:** movimientos, fiados por cobrar, flujo y la cuota con su cálculo.
-3. **Procesar lote (CSV):** sube `set_oculto.csv` y descarga `resultados_<equipo>.csv` con las columnas exactas de la plantilla.
+La app tiene dos ventanas:
+1. **💬 Chat:** un celular con WhatsApp abierto. Se escribe o se graba una nota de voz con el botón del micrófono; Mi Caja responde en burbujas como una persona ("escribiendo…", doble check azul). Si falta un monto, pregunta; se le contesta y lo completa. También responde "¿cuánto puedo pagar de cuota al mes?" y "¿cuánto me queda?".
+2. **📊 Dashboard:** lo que te queda en la semana, ventas, gastos, cobros y fiados; gráfico por día, gastos por concepto, la cuota con su cálculo paso a paso y el registro con buscador, filtros y botón para eliminar (con Deshacer).
 
-El botón **Cargar semana de ejemplo (sin IA)** del panel lateral carga la clave del kit para probar el libro y la cuota sin gastar cuota de Groq.
+El botón ⚙️ abre las **herramientas del equipo**: día de hoy, **Cargar semana de ejemplo (sin IA)**, **Borrar todo**, y **Procesar lote** para subir `set_oculto.csv` y descargar `resultados_<equipo>.csv` con las columnas exactas de la plantilla.
+
+**Foto del bot:** pon un archivo cuadrado `assets/bot.png` (o `.jpg` / `.webp`, mínimo 256 × 256). Si no hay, se usa `assets/bot.svg`.
 
 ## Límites de Groq a tener en cuenta (plan gratis)
 
@@ -49,12 +50,14 @@ El botón **Cargar semana de ejemplo (sin IA)** del panel lateral carga la clave
 
 - **Libro vacío:** el libro se guarda en `data/ledger.json` y sobrevive a reinicios. Usa **Borrar todo y empezar de cero** antes de la prueba en vivo para no arrastrar datos de ensayos.
 - **Micrófono:** el navegador solo deja grabar en `localhost` o en una página `https`. Una URL `http` en la red local no funcionará.
-- **Nueva clave en caliente:** si cambias `.env`, reinicia `streamlit run`.
+- **Nueva clave en caliente:** si cambias `.env`, reinicia el servidor (`uvicorn`).
 
 ## Estructura
 
 ```
-app.py          interfaz web
+server.py       servidor web (API sobre core/)
+web/            interfaz: index.html, styles.css, app.js
+assets/         foto del bot
 eval.py         exactitud contra la clave del kit
 batch.py        procesa un CSV de mensajes a CSV de entrega
 core/

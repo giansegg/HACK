@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mi Caja</title>
+  <meta name="description" content="El asistente de WhatsApp que convierte las notas de Doña Rosa en su libro de caja.">
+  <link rel="icon" href="/api/avatar">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="grain"></span></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <img src="/api/avatar" alt="">
+      <div><b>Mi Caja</b><small>la libreta de Doña Rosa, ahora en WhatsApp</small></div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Ventanas">
+      <span class="tab-ind" aria-hidden="true"></span>
+      <button class="tab activo" data-vista="chat" role="tab" aria-selected="true">💬 Chat</button>
+      <button class="tab" data-vista="dash" role="tab" aria-selected="false">📊 Dashboard <span class="badge" id="badge" hidden>0</span></button>
+    </nav>
+    <button class="icon-btn" id="btnTools" aria-label="Herramientas del equipo" title="Herramientas del equipo">
+      <svg viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm7.4-2.5.1-1-.1-1 2.1-1.6-2-3.5-2.5 1a7.6 7.6 0 0 0-1.7-1L15 3h-4l-.4 2.6c-.6.3-1.2.6-1.7 1l-2.5-1-2 3.5L6.5 11l-.1 1 .1 1-2.1 1.6 2 3.5 2.5-1c.5.4 1.1.7 1.7 1L11 21h4l.4-2.6c.6-.3 1.2-.6 1.7-1l2.5 1 2-3.5-2.2-1.9Z"/></svg>
+    </button>
+  </header>
+
+  <main>
+    <!-- ===================== VENTANA 1: CHAT ===================== -->
+    <section id="vista-chat" class="vista activa" aria-label="Chat">
+      <div class="stage" id="stage">
+        <div class="feat f1"><span>🎤</span><div><b>Notas de voz</b><small>Habla como en WhatsApp</small></div></div>
+        <div class="feat f2"><span>🧠</span><div><b>Entiende como tú</b><small>"bendi 6 guevos" también vale</small></div></div>
+        <div class="feat f3"><span>🛡️</span><div><b>Nunca inventa montos</b><small>Si falta un dato, te pregunta</small></div></div>
+        <div class="feat f4"><span>📈</span><div><b>Tu cuota al mes</b><small>Calculada con tu caja real</small></div></div>
+
+        <div class="phone-float">
+          <div class="phone" id="phone">
+            <span class="side s-power"></span><span class="side s-vol1"></span><span class="side s-vol2"></span>
+            <div class="screen">
+              <div class="statusbar">
+                <span id="reloj">12:00</span>
+                <span class="island"></span>
+                <span class="sb-icons" aria-hidden="true">
+                  <svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+                  <svg viewBox="0 0 16 12"><path d="M8 2.2c2.4 0 4.6.9 6.3 2.5l1.2-1.3A10.7 10.7 0 0 0 8 .4 10.7 10.7 0 0 0 .5 3.4l1.2 1.3A9 9 0 0 1 8 2.2Zm0 3.6c1.4 0 2.7.5 3.7 1.4l1.2-1.3A7.2 7.2 0 0 0 8 4a7.2 7.2 0 0 0-4.9 1.9l1.2 1.3c1-.9 2.3-1.4 3.7-1.4Zm0 3.5c-.6 0-1.1.2-1.5.6L8 11.6l1.5-1.7c-.4-.4-.9-.6-1.5-.6Z"/></svg>
+                  <span class="bat"><i></i></span>
+                </span>
+              </div>
+
+              <div class="wa-head">
+                <svg class="ico" viewBox="0 0 24 24"><path d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20z"/></svg>
+                <img class="avatar" src="/api/avatar" alt="Mi Caja">
+                <div class="who"><b>Mi Caja</b><small id="estado">en línea</small></div>
+                <svg class="ico" viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4Z"/></svg>
+                <svg class="ico" viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z"/></svg>
+                <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+              </div>
+
+              <div class="wa-chat" id="chat">
+                <div class="chip-fecha">HOY</div>
+                <div class="chip-cifrado">🔒 Lo que escribes aquí se anota en tu libro de caja. Los datos de esta demo son sintéticos.</div>
+                <div id="mensajes"></div>
+              </div>
+
+              <div class="sugerencias" id="sugerencias">
+                <button type="button">vendí 3 gaseosas a 2.50</button>
+                <button type="button">¿cuánto me queda?</button>
+                <button type="button">¿cuánto puedo pagar de cuota?</button>
+                <button type="button">le fié 2 cervezas a don Pepe</button>
+                <button type="button">pagué el agua 45</button>
+              </div>
+
+              <form class="composer" id="composer" autocomplete="off">
+                <div class="pill">
+                  <button type="button" class="ico-btn" id="btnEmoji" aria-label="Emoji">
+                    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18.2a8.2 8.2 0 1 1 0-16.4 8.2 8.2 0 0 1 0 16.4ZM8.6 11a1.4 1.4 0 1 0 0-2.8 1.4 1.4 0 0 0 0 2.8Zm6.8 0a1.4 1.4 0 1 0 0-2.8 1.4 1.4 0 0 0 0 2.8ZM12 17.3c2.3 0 4.2-1.5 4.9-3.6H7.1c.7 2.1 2.6 3.6 4.9 3.6Z"/></svg>
+                  </button>
+                  <input id="entrada" type="text" placeholder="Mensaje" aria-label="Escribe un mensaje" maxlength="400">
+                  <svg class="ico-muted" viewBox="0 0 24 24"><path d="M16.5 6v11.5a4 4 0 0 1-8 0V5a2.5 2.5 0 0 1 5 0v10.5a1 1 0 0 1-2 0V6H10v9.5a2.5 2.5 0 0 0 5 0V5a4 4 0 0 0-8 0v12.5a5.5 5.5 0 0 0 11 0V6h-1.5Z"/></svg>
+                  <svg class="ico-muted" viewBox="0 0 24 24"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4ZM9 2 7.2 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.2L15 2H9Zm3 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10Z"/></svg>
+                </div>
+                <button class="fab" id="fab" type="button" aria-label="Grabar nota de voz">
+                  <svg class="i-mic" viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Zm5.3-3a5.3 5.3 0 0 1-10.6 0H5a7 7 0 0 0 6 6.9V21h2v-3.1a7 7 0 0 0 6-6.9h-1.7Z"/></svg>
+                  <svg class="i-send" viewBox="0 0 24 24"><path d="M2 21 23 12 2 3v7l15 2-15 2v7Z"/></svg>
+                </button>
+              </form>
+
+              <div class="recbar" id="recbar" hidden>
+                <button type="button" class="ico-btn rec-cancel" id="recCancel" aria-label="Cancelar grabación">
+                  <svg viewBox="0 0 24 24"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12ZM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4Z"/></svg>
+                </button>
+                <span class="rec-dot"></span><span class="rec-time" id="recTime">0:00</span>
+                <div class="rec-wave" id="recWave"></div>
+                <button class="fab" id="recSend" type="button" aria-label="Enviar nota de voz">
+                  <svg viewBox="0 0 24 24"><path d="M2 21 23 12 2 3v7l15 2-15 2v7Z"/></svg>
+                </button>
+              </div>
+              <div class="homebar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== VENTANA 2: DASHBOARD ===================== -->
+    <section id="vista-dash" class="vista" aria-label="Dashboard">
+      <div class="dash">
+        <div class="dash-head">
+          <div>
+            <h1>Hola, Doña Rosa 👋</h1>
+            <p>Aquí ves tu caja. Todo sale de lo que le cuentas a Mi Caja en el chat.</p>
+          </div>
+          <div class="dash-actions">
+            <button class="btn ghost" id="irChat">💬 Anotar algo</button>
+            <a class="btn" id="btnCsv" href="/api/resultados.csv">⬇ Descargar CSV</a>
+          </div>
+        </div>
+
+        <section class="sec">
+          <div class="sec-h"><span class="num">1</span><div><h2>¿Cómo vas esta semana?</h2><p>Lo que entró, lo que salió y lo que te queda.</p></div></div>
+          <div class="resumen">
+            <div class="hero">
+              <div class="hero-lbl">Te queda esta semana</div>
+              <div class="hero-val" id="heroVal">S/ 0.00</div>
+              <div class="formula" id="formula"></div>
+              <svg class="hero-deco" viewBox="0 0 200 80" aria-hidden="true"><path d="M0 70 C40 60 50 30 90 38 S150 10 200 6" fill="none"/></svg>
+            </div>
+            <div class="tres" id="tres"></div>
+          </div>
+          <div class="card" id="cardDias" hidden>
+            <div class="card-h">
+              <div><h3>Día por día</h3><small>Pasa el mouse sobre un día para ver el detalle</small></div>
+              <div class="legend"><span><i class="sw s1"></i>Entró</span><span><i class="sw s2"></i>Salió</span></div>
+            </div>
+            <div id="chartDias" class="chart"></div>
+          </div>
+        </section>
+
+        <section class="sec">
+          <div class="sec-h"><span class="num">2</span><div><h2>¿Cuánto puedes pagar de cuota al mes?</h2><p>Un estimado con tu caja real. No es un crédito aprobado.</p></div></div>
+          <div class="card cuota" id="cuotaCard"></div>
+        </section>
+
+        <section class="sec">
+          <div class="sec-h"><span class="num">3</span><div><h2>Tus movimientos</h2><p>Todo lo que anotaste. Si algo está mal, lo borras.</p></div></div>
+          <div id="alerta"></div>
+          <div class="card registro">
+            <div class="card-h">
+              <small id="regCount"></small>
+              <div class="reg-tools">
+                <input type="search" id="buscar" placeholder="Buscar producto o cliente…" aria-label="Buscar">
+                <div class="chips" id="filtros"></div>
+              </div>
+            </div>
+            <div class="tabla" id="tabla" role="table" aria-label="Movimientos"></div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== HERRAMIENTAS DEL EQUIPO ===================== -->
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="drawer" id="drawer" aria-label="Herramientas del equipo" aria-hidden="true">
+    <div class="drawer-h"><h3>Herramientas del equipo</h3><button class="icon-btn dark" id="cerrarTools" aria-label="Cerrar">✕</button></div>
+    <div class="tool">
+      <label for="dia">Día de hoy (para lo que se anota en el chat)</label>
+      <select id="dia"></select>
+    </div>
+    <div class="tool estado" id="estadoGroq">Comprobando conexión…</div>
+    <div class="tool">
+      <button class="btn block" id="btnEjemplo">Cargar semana de ejemplo (sin IA)</button>
+      <button class="btn block danger" id="btnReset">Borrar todo y empezar de cero</button>
+    </div>
+    <div class="tool lote">
+      <h4>Procesar lote · set oculto</h4>
+      <label for="equipo">Nombre del equipo</label>
+      <input id="equipo" value="equipo">
+      <label class="file" for="archivo"><input type="file" id="archivo" accept=".csv"><span id="archivoNombre">Elegir CSV (id_mensaje,dia,mensaje)</span></label>
+      <label class="check"><input type="checkbox" id="usarEj"> Usar los 30 ejemplos del kit (prueba)</label>
+      <button class="btn block primary" id="btnLote">Procesar lote</button>
+      <div class="lote-res" id="loteRes"></div>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="tip" id="tip" role="tooltip"></div>
+  <script src="app.js"></script>
+</body>
+</html>

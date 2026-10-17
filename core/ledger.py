@@ -67,6 +67,10 @@ class Ledger:
             self.save()
         return r
 
+    def delete(self, uid):
+        self.rows = [r for r in self.rows if r["uid"] != uid]
+        self.save()
+
     def get(self, uid):
         return next((r for r in self.rows if r["uid"] == uid), None)
 
