@@ -61,7 +61,7 @@ def graficas(led: Ledger):
         elif r["tipo"] == "gasto" and d:
             por_dia[d]["salio"] += r["monto"]
         nombre = (r["producto"] or "").strip().capitalize()
-        if r["tipo"] == "venta" and "suelta" not in norm(nombre):
+        if r["tipo"] == "venta" and "suelt" not in norm(nombre):
             ventas[nombre] = ventas.get(nombre, 0) + r["monto"]
         elif r["tipo"] == "gasto":
             gastos[nombre] = gastos.get(nombre, 0) + r["monto"]

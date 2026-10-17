@@ -220,27 +220,52 @@ function filaMov(m) {
 /* ---------- gráficas ---------- */
 const ABR = { lunes: "Lun", martes: "Mar", "miércoles": "Mié", jueves: "Jue", viernes: "Vie", "sábado": "Sáb", domingo: "Dom" };
 const corto = (n) => (n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(".0", "") + " mil" : String(Math.round(n)));
-function graficaSemana(dias) {
-  const con = dias.filter((d) => d.entro || d.salio);
-  if (!con.length) return "";
-  const W = 340, H = 170, base = 140, izq = 4, ancho = (W - izq * 2) / 7;
+const DOW = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+let diaSel = null;
+/* Día de referencia: el elegido, o hoy si tiene movimientos, o el último día con datos. */
+function diaRef(dias) {
+  if (diaSel && dias.some((d) => d.dia === diaSel)) return diaSel;
+  const hoy = DOW[new Date().getDay()], d = dias.find((x) => x.dia === hoy);
+  if (d && (d.entro || d.salio)) return hoy;
+  const con = dias.filter((x) => x.entro || x.salio);
+  return con.length ? con[con.length - 1].dia : hoy;
+}
+function graficaSemana(dias, ref) {
+  const W = 340, H = 190, base = 150, izq = 2, ancho = (W - izq * 2) / 7;
   const max = Math.max(...dias.map((d) => Math.max(d.entro, d.salio)), 1);
-  const alto = (v) => Math.max(v > 0 ? 3 : 0, (v / max) * (base - 22));
-  const mejor = con.reduce((a, b) => (b.entro > a.entro ? b : a));
-  let g = `<line class="eje" x1="0" x2="${W}" y1="${base}" y2="${base}"/>`;
+  const alto = (v) => Math.max(v > 0 ? 3 : 0, (v / max) * (base - 34));
+  let g = "";
   dias.forEach((d, i) => {
-    const x = izq + i * ancho, cx = x + ancho / 2, bw = 12;
+    const x = izq + i * ancho, cx = x + ancho / 2, bw = 13, es = d.dia === ref;
     const e = alto(d.entro), sl = alto(d.salio);
-    g += `<rect x="${cx - bw - 1}" y="${base - e}" width="${bw}" height="${e}" rx="3" fill="#1F6B45"/>`;
-    g += `<rect x="${cx + 1}" y="${base - sl}" width="${bw}" height="${sl}" rx="3" fill="#B9564A"/>`;
-    const es = d === mejor;
-    if (es) g += `<text class="fuerte" x="${cx}" y="${base - e - 6}" text-anchor="middle">${corto(d.entro)}</text>`;
-    g += `<text class="${es ? "fuerte" : ""}" x="${cx}" y="${base + 18}" text-anchor="middle">${ABR[d.dia]}</text>`;
+    g += `<g class="col" tabindex="0" role="button" data-dia="${d.dia}" aria-label="${esc(d.dia)}: entró ${money(d.entro)}, salió ${money(d.salio)}">`;
+    g += `<rect x="${x + 1}" y="6" width="${ancho - 2}" height="${base + 36}" rx="10" fill="${es ? "#E6EFEA" : "transparent"}"/>`;
+    g += `<rect x="${cx - bw - 1}" y="${base - e}" width="${bw}" height="${e}" rx="3.5" fill="#1F6B45"/>`;
+    g += `<rect x="${cx + 1}" y="${base - sl}" width="${bw}" height="${sl}" rx="3.5" fill="#B9564A"/>`;
+    if (es) {
+      if (d.entro) g += `<text class="fuerte" x="${cx - 1}" y="${base - e - 6}" text-anchor="end">${corto(d.entro)}</text>`;
+      if (d.salio) g += `<text class="fuerte rojo" x="${cx + 1}" y="${base - sl - 6}" text-anchor="start">${corto(d.salio)}</text>`;
+    }
+    g += `<text class="${es ? "fuerte" : ""}" x="${cx}" y="${base + 22}" text-anchor="middle">${ABR[d.dia]}</text></g>`;
   });
-  const dato = mejor.entro ? `Tu mejor día fue el <b>${esc(mejor.dia)}</b>: entraron <b>${money(mejor.entro)}</b>.` : "";
-  return `<h2>Tu semana</h2><div class="graf"><p class="dato">${dato}</p>
-    <svg class="barras" viewBox="0 0 ${W} ${H}" role="img" aria-label="Entradas y salidas por día">${g}</svg>
+  g += `<line class="eje" x1="0" x2="${W}" y1="${base}" y2="${base}"/>`;
+  return `<h2>Día por día</h2><div class="graf"><p class="dato">Toca un día para ver su saldo arriba.</p>
+    <svg class="barras" viewBox="0 0 ${W} ${H}" role="group" aria-label="Entradas y salidas por día">${g}</svg>
     <div class="leyenda"><span><i style="background:#1F6B45"></i>Entró</span><span><i style="background:#B9564A"></i>Salió</span></div></div>`;
+}
+function dashboard(c) {
+  const r = c.resumen, dias = c.graficas.dias, ref = diaRef(dias), d = dias.find((x) => x.dia === ref);
+  const saldo = Math.round((d.entro - d.salio) * 100) / 100, hoy = ref === DOW[new Date().getDay()];
+  const nFiados = c.fiados.length;
+  return `<div class="saldo ${saldo < 0 ? "neg" : ""}"><small>${hoy ? "Saldo de hoy, " + esc(ref) : "Saldo del " + esc(ref)}</small>
+      <strong>${saldo < 0 ? "− " : ""}${money(Math.abs(saldo))}</strong>
+      <span>Entró ${money(d.entro)} · Salió ${money(d.salio)}</span></div>
+    <div class="kpis">
+      <div class="kpi entra"><small>Ingresos de la semana</small><b>${money(r.entro)}</b><span>ventas y cobros</span></div>
+      <div class="kpi sale"><small>Gasto de la semana</small><b>${money(r.gastos)}</b><span>compras y pagos</span></div>
+      <div class="kpi fiado"><div><small>Fiados por cobrar</small><b>${money(r.por_cobrar)}</b></div>
+        <span>${nFiados ? `${nFiados} ${nFiados === 1 ? "cliente" : "clientes"}${c.fiados.some((f) => f.debe == null) ? " · falta algún monto" : ""}` : "Nadie te debe"}</span></div>
+    </div>` + graficaSemana(dias, ref);
 }
 function topBarras(titulo, lista, clase, frase) {
   if (!lista.length) return "";
@@ -249,7 +274,6 @@ function topBarras(titulo, lista, clase, frase) {
   return `<h2>${titulo}</h2><div class="graf"><p class="dato">${frase(lista[0], total)}</p><div class="top5 ${clase}">${filas}</div></div>`;
 }
 const graficasHtml = (g) =>
-  graficaSemana(g.dias) +
   topBarras("Lo que más vendes", g.ventas, "venta", (t, tot) => `<b>${esc(t.nombre)}</b> es lo que más te deja: ${Math.round((t.monto / tot) * 100)}% de lo mostrado.`) +
   topBarras("En qué gastas", g.gastos, "gasto", (t, tot) => `Tu mayor gasto es <b>${esc(t.nombre)}</b>: ${Math.round((t.monto / tot) * 100)}% de lo mostrado.`);
 function pintarCaja() {
@@ -260,8 +284,7 @@ function pintarCaja() {
   if (!caja.movimientos.length) {
     h += '<div class="vacio"><b>Todavía no hay nada anotado</b>Ve a Conversación y cuéntame tu primera venta.</div>';
   } else {
-    h += `<div class="queda"><small>Te queda</small><strong>${money(r.flujo)}</strong><span>ventas y cobros menos gastos</span></div>`;
-    h += `<div class="dos"><div class="cifra entra"><small>Entró</small><b>${money(r.entro)}</b></div><div class="cifra sale"><small>Salió</small><b>${money(r.gastos)}</b></div></div>`;
+    h += dashboard(caja);
     if (r.pendientes) h += `<p style="color:var(--ambar)">Hay ${r.pendientes} anotación(es) sin monto. No las cuento hasta que me digas cuánto fue.</p>`;
     if (caja.fiados.length) {
       h += "<h2>Te deben</h2><div class='lista'>" + caja.fiados.map((f) =>
@@ -281,6 +304,11 @@ function pintarCaja() {
       <label class="btn">Procesar CSV<input id="b-lote" type="file" accept=".csv" hidden></label></div>
       <small>${caja.ia && caja.ia.length ? "IA conectada: " + esc(caja.ia.join(", ")) : "Sin clave de IA configurada"}</small></details>`;
   el.innerHTML = h;
+  el.querySelectorAll(".col").forEach((c) => {
+    const elegir = () => { diaSel = c.dataset.dia; pintarCaja(); };
+    c.addEventListener("click", elegir);
+    c.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); elegir(); } });
+  });
   $("#b-ejemplo").onclick = () => accion("/api/ejemplo", "Semana de ejemplo cargada.");
   $("#b-reset").onclick = () => { if (confirm("¿Borrar todo lo anotado?")) accion("/api/reset", "Listo, empezamos de cero.", true); };
   $("#b-lote").onchange = lote;
