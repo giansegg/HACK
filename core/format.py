@@ -21,16 +21,20 @@ def pregunta_para(r):
     }[r["tipo"]]
 
 
-def respuesta(res, ledger):
-    """res: resultado de extractor.procesar para un mensaje."""
-    lineas = [f"✅ Anoté: {describe(r)}" if r["monto"] is not None else f"⚠️ {describe(r)}" for r in res["nuevas"]]
-    lineas += [f"✅ Listo, completé: {describe(r)}" for r in res["completadas"]]
+def lineas(res, ledger):
+    """res: resultado de extractor.procesar. Devuelve [(tipo, texto)] con tipo ok | falta | info | pregunta."""
+    out = [("ok" if r["monto"] is not None else "falta", describe(r)) for r in res["nuevas"]]
+    out += [("ok", f"Completé: {describe(r)}") for r in res["completadas"]]
     if res.get("nota"):
-        lineas.append(f"ℹ️ {res['nota']}")
-    lineas += [f"ℹ️ {a}" for a in res["avisos"]]
+        out.append(("info", res["nota"]))
+    out += [("info", a) for a in res["avisos"]]
     if not res["nuevas"] and not res["completadas"] and not res.get("nota"):
-        lineas.append("No encontré nada para anotar en ese mensaje. ¿Me lo repites?")
+        out.append(("info", "No encontré nada para anotar ahí. Cuéntame una venta, un gasto o un fiado."))
     pend = ledger.pendientes()
     if pend:
-        lineas.append("❓ " + pregunta_para(pend[0]))
-    return "\n\n".join(lineas)
+        out.append(("pregunta", pregunta_para(pend[-1])))
+    return out
+
+
+def respuesta(res, ledger):
+    return "\n\n".join(t for _, t in lineas(res, ledger))

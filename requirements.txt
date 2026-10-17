@@ -1,4 +1,5 @@
-streamlit>=1.39
-groq>=0.13
+fastapi
+uvicorn[standard]
+requests
 pandas
 python-dotenv

@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "caja-dona-rosa",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "streamlit", "run", "app.py", "--server.port", "8501", "--server.headless", "true", "--browser.gatherUsageStats", "false"],
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "uvicorn", "server:app", "--port", "8501"],
       "port": 8501
     }
   ]

@@ -1,4 +1,4 @@
-"""Mide la exactitud contra la clave del kit (necesita GROQ_API_KEY).
+"""Mide la exactitud contra la clave del kit (necesita una clave de IA).
 
 python eval.py               # evalúa los 30 mensajes sin usar sus propias respuestas como ejemplos
 python eval.py --desde E16   # solo desde ese mensaje (los anteriores se cargan de la clave)

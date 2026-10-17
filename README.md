@@ -1,9 +1,9 @@
-# Caja de Doña Rosa: MVP (Streamlit + Groq)
+# Caja de Doña Rosa: MVP (FastAPI + web propia, Gemini/Groq/Grok)
 
 Agente web que convierte notas de voz y mensajes de una bodeguera en ventas, gastos y fiados, calcula su flujo de caja y estima una cuota mensual sostenible. Reto Mibanco "De la libreta a la caja".
 
 ```
-Navegador (mic / texto) → Whisper (Groq) → LLM extractor (Groq, JSON) → Validador (código) → Libro de caja → Flujo y cuota (código)
+Navegador (mic / texto) → Voz→texto (Gemini) → LLM extractor (Gemini, JSON) → Validador (código) → Libro de caja → Flujo y cuota (código)
                                                                            └─ si falta el monto: repregunta
 ```
 
@@ -12,31 +12,31 @@ El LLM solo interpreta el texto. Lo que se guarda y todo cálculo de plata lo ha
 - **Fiados:** el libro los recuerda, así "me pagó lo del aceite" se completa con los S/ 11 anotados antes.
 - **Flujo y cuota:** se calculan en `core/calc.py`.
 
-## Instalación
+## Instalación y uso
 
 ```bash
-cd mvp
 pip install -r requirements.txt
-cp .env.example .env     # en Windows PowerShell: copy .env.example .env
+cp .env.example .env          # pega tu GEMINI_API_KEY (y opcionalmente GROQ_API_KEY / XAI_API_KEY)
+python3 -m uvicorn server:app --port 8501    # abre http://localhost:8501
 ```
 
-Edita `.env` y pega tu clave en `GROQ_API_KEY` (se crea en https://console.groq.com/keys). Nunca la subas a git ni la pongas en el navegador.
+Basta una clave. Se usan en el orden Gemini → Groq → xAI Grok y, si un modelo se satura, se pasa al siguiente. Nunca subas `.env` a git.
 
-## Uso
+La interfaz es HTML/CSS/JS propio (`web/`), responsive, sin dependencias de frontend. Cada navegador tiene su propio libro de caja. La nota de voz se puede **cancelar** (botón o Esc) antes de enviarla.
+
+## Despliegue gratis desde GitHub
+
+GitHub Pages solo sirve páginas estáticas y la clave de IA quedaría expuesta en el navegador, por eso el servidor corre aparte. Con el repo en GitHub:
+- **Render** (gratis): *New → Blueprint* con este repo (usa `render.yaml`) y pega `GEMINI_API_KEY` en las variables de entorno. Da una URL `https`, necesaria para el micrófono.
+- **Hugging Face Spaces** (gratis): Space tipo Docker con este repo (usa `Dockerfile`) y la clave en *Secrets*.
+
+Los libros se guardan en `data/sesiones/` (temporal en el plano gratis).
 
 | Qué | Comando |
 |---|---|
-| App web | `streamlit run app.py` |
-| Medir exactitud con el kit (necesita clave) | `python eval.py` (`--desde E16` evalúa solo desde ese mensaje) |
-| Procesar el set oculto sin la web | `python batch.py set_oculto.csv resultados_miequipo.csv` |
-| Pruebas offline (sin clave) | `python tests/test_core.py` |
-
-La app tiene tres pestañas:
-1. **Hablar con el agente:** nota de voz o texto. Si falta un monto, pregunta; se le contesta y lo completa. También responde "¿cuánto puedo pagar de cuota al mes?" y "¿cuánto me queda?".
-2. **Libro de caja:** movimientos, fiados por cobrar, flujo y la cuota con su cálculo.
-3. **Procesar lote (CSV):** sube `set_oculto.csv` y descarga `resultados_<equipo>.csv` con las columnas exactas de la plantilla.
-
-El botón **Cargar semana de ejemplo (sin IA)** del panel lateral carga la clave del kit para probar el libro y la cuota sin gastar cuota de Groq.
+| Medir exactitud con el kit | `python3 eval.py` |
+| Procesar el set oculto sin la web | `python3 batch.py set_oculto.csv resultados_miequipo.csv` |
+| Pruebas offline | `python3 tests/test_core.py` |
 
 ## Límites de Groq a tener en cuenta (plan gratis)
 
@@ -47,14 +47,15 @@ El botón **Cargar semana de ejemplo (sin IA)** del panel lateral carga la clave
 
 ## Antes de la demo
 
-- **Libro vacío:** el libro se guarda en `data/ledger.json` y sobrevive a reinicios. Usa **Borrar todo y empezar de cero** antes de la prueba en vivo para no arrastrar datos de ensayos.
+- **Libro vacío:** cada navegador guarda su libro en `data/sesiones/`. Usa **Borrar todo y empezar de cero** (Mi caja → Más opciones) antes de la prueba en vivo para no arrastrar datos de ensayos.
 - **Micrófono:** el navegador solo deja grabar en `localhost` o en una página `https`. Una URL `http` en la red local no funcionará.
-- **Nueva clave en caliente:** si cambias `.env`, reinicia `streamlit run`.
+- **Nueva clave en caliente:** si cambias `.env`, reinicia uvicorn.
 
 ## Estructura
 
 ```
-app.py          interfaz web
+server.py       API (FastAPI) que sirve la web
+web/            interfaz: index.html, app.css, app.js
 eval.py         exactitud contra la clave del kit
 batch.py        procesa un CSV de mensajes a CSV de entrega
 core/

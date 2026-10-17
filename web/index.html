@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F7F4EE">
+<title>Caja de Doña Rosa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="stage"><div class="device" id="device">
+<div class="isla" aria-hidden="true"></div>
+<div class="barra" aria-hidden="true">
+  <span id="hora">9:41</span>
+  <span class="iconos">
+    <svg viewBox="0 0 18 12" style="fill:currentColor;stroke:none"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8"/><rect x="10" y="3" width="3" height="9" rx=".8"/><rect x="15" y="0" width="3" height="12" rx=".8"/></svg>
+    <svg viewBox="0 0 16 12" style="stroke-width:1.8"><path d="M1 4.2a10 10 0 0 1 14 0M3.7 7a6 6 0 0 1 8.6 0"/><circle cx="8" cy="10" r=".9" style="fill:currentColor"/></svg>
+    <svg viewBox="0 0 28 13" style="width:2em;stroke-width:1"><rect x=".5" y=".5" width="23" height="12" rx="3.5" style="opacity:.45"/><rect x="2" y="2" width="17" height="9" rx="2" style="fill:currentColor;stroke:none"/><path d="M26 4.5v4" style="opacity:.5;stroke-width:1.6"/></svg>
+  </span>
+</div>
+<div class="screen" id="screen">
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <h1>Caja de Doña Rosa</h1>
+      <p id="fecha"></p>
+    </div>
+    <nav class="seg" role="tablist" aria-label="Secciones">
+      <button role="tab" id="t-chat" aria-selected="true" data-vista="chat">Conversación</button>
+      <button role="tab" id="t-caja" aria-selected="false" data-vista="caja">Mi caja</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="v-chat" class="vista" aria-live="polite">
+      <div id="mensajes"></div>
+    </section>
+    <section id="v-caja" class="vista" hidden>
+      <div id="caja"></div>
+    </section>
+  </main>
+</div>
+</div>
+  <footer class="dock" id="dock">
+    <div class="chips" id="chips">
+      <button class="chip" data-q="¿cuánto me queda?">¿Cuánto me queda?</button>
+      <button class="chip" data-q="¿cuánto puedo pagar de cuota al mes?">Mi cuota al mes</button>
+    </div>
+
+    <div id="d-normal">
+      <button class="hablar" id="btn-hablar" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        <span>Toca para hablar</span>
+      </button>
+      <form class="escribir" id="form">
+        <input id="texto" type="text" autocomplete="off" enterkeyhint="send"
+               placeholder="O escribe aquí…" aria-label="Escribe tu mensaje">
+        <button class="enviar" type="submit" aria-label="Enviar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <div id="d-grabando" hidden>
+      <div class="rec">
+        <span class="punto" aria-hidden="true"></span>
+        <span class="rec-txt">Escuchando</span>
+        <span class="tiempo" id="tiempo">0:00</span>
+        <canvas id="nivel" width="320" height="64" aria-hidden="true"></canvas>
+      </div>
+      <p class="ayuda">Cuéntame con calma. Cuando termines, toca Enviar.</p>
+      <div class="acciones">
+        <button class="sec" id="btn-cancelar" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Cancelar
+        </button>
+        <button class="pri" id="btn-enviar" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Enviar
+        </button>
+      </div>
+    </div>
+
+    <div id="d-proceso" hidden>
+      <div class="rec"><span class="giro" aria-hidden="true"></span><span class="rec-txt" id="proceso-txt">Escuchando tu nota…</span></div>
+      <div class="acciones"><button class="sec" id="btn-abortar" type="button">Cancelar</button></div>
+    </div>
+  </footer>
+<div class="home" aria-hidden="true"></div>
+<div id="aviso" class="aviso" role="status" hidden></div>
+</div></div>
+<script src="app.js"></script>
+</body>
+</html>
