@@ -1,0 +1,3 @@
+.env
+data/ledger.json
+__pycache__/
