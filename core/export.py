@@ -10,7 +10,7 @@ def fmt_cant(c):
 
 def a_df(rows):
     data = [{"id_mensaje": r["id_mensaje"], "tipo": r["tipo"], "producto": r["producto"],
-             "cantidad": fmt_cant(r["cantidad"]),
+             "cantidad": str(fmt_cant(r["cantidad"])),
              "monto": "" if r["monto"] is None else f"{r['monto']:.2f}",
              "requiere_confirmacion": "SI" if r["monto"] is None else "NO"} for r in rows]
     return pd.DataFrame(data, columns=COLUMNAS)

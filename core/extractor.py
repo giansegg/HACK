@@ -25,7 +25,7 @@ REGLAS:
 3. Si el mensaje se corrige ("no perdón, fueron 8"), usa solo la versión corregida.
 4. Si dice un total del día sin detalle ("salieron 210 en ventas sueltas"), es UNA fila venta con producto "ventas sueltas" (o el nombre dicho) y cantidad 1.
 5. NUNCA inventes ni supongas datos que no dijo. Si falta el precio o el monto, pon "monto": null. Jamás uses 0.
-6. Si dice un precio por unidad ("a 4 soles el kilo"), monto = cantidad x precio. Los números pueden venir en letras ("seis cincuenta" = 6.50).
+6. Si dice un precio por unidad ("a 4 soles el kilo"), monto = cantidad x precio. Los números pueden venir en letras ("seis cincuenta" = 6.50). Si el precio nombrado es por la porción que vendió ("medio kilo de queso, el medio a 9", "la docena a 6"), ese precio ya es el total de la fila: monto = 9.
 7. Normaliza el producto a su nombre simple y corrige typos ("guevos" = huevos).
 8. En fiado y cobro_fiado completa "cliente" con el nombre o referencia (don Pepe, vecina).
 9. cobro_fiado sin monto: deja "monto": null (el sistema lo completa con el fiado ya registrado). Si dice cuánto pagó, ese es el monto.
